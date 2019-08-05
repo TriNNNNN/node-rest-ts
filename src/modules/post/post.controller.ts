@@ -44,7 +44,7 @@ export class Post extends BaseCotroller{
       let user: IUser = await userService.getUserByEmail(req.body.email);
       if (user !== null) {
         const post: IPost = await postService.addPost(req.body);
-        const postUpdated = await userService.updateUserPath(req.body.email, post._id)
+        const postUpdated = await userService.updateUserPost(user, post._id)
         res.locals.data = post;
         return next();
       } else {

@@ -28,7 +28,7 @@ export class UserService {
   }
 
   public async getUserByEmail(email: string): Promise<any> {
-    return userModel.findOne({ email: email }, '+password -_id -__v');
+    return userModel.findOne({ email: email }, '+password  -__v');
   }
 
   public async comparePassword(password: string,hash: string): Promise<boolean> {
@@ -64,10 +64,7 @@ export class UserService {
     }
   }
 
-  public async updateUserPath(email: string, postData: string): Promise<any> {
-     let doc = await userModel.findOneAndUpdate({ email: email }, { post: postData }, {
-      new: true
-    });
-    return doc
+  public async updateUserPost(user: IUser, postData: string): Promise<any> {
+    return userModel.findByIdAndUpdate(user._id,{ $push: { post: postData }}, { new: true, upsert: true });
   }
 }
