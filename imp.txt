@@ -22,3 +22,60 @@ WHY??
     "ts": "tsc -w"
   },
 ============================
+
+
+
+
+User
+firstname : string
+lastname  : string
+gender    : string
+email     : string
+password  : string
+userRole  : string
+post      : array of object
+createdAt : date
+
+Post
+title     : string
+url       : string
+content   : string
+image     : string
+createdAt : date
+updatedAt : date
+
+user(customer) -> login -> success  -> jwt token    -> add/view/edit/delete post  -> 
+               -> fail     -> invalid user          -> like/dislike post
+               
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
