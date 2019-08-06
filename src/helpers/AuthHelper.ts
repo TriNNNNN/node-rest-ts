@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { Result, validationResult } from 'express-validator';
 import * as jwt from 'jsonwebtoken';
-
+import userDefinedError from '../exceptions/error.handler';
 
 export class AuthHelper {
-    
     public async validation(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const errors: Result<{}> = validationResult(req);
@@ -15,10 +14,7 @@ export class AuthHelper {
                 return next();
             }
         } catch(err) {
-            res.locals.data.message = err.message
-            res.locals.details = err;
-            res.locals.name = "ValidationError";
-            return next();
+            next(new userDefinedError(404, err.message))
         }
     }
 
@@ -31,14 +27,13 @@ export class AuthHelper {
               req.body.loggedinUserId = auth.id;
               next();
             } else {
-                throw new Error('Access Permitted');
+              next(new userDefinedError(404, 'Access Permitted'))
             }
           } else {
-              throw new Error('Access Permitted');
+            next(new userDefinedError(404, 'Access Permitted'))
           }
         } catch (err) {
-          throw new Error('Access Permitted');
+          next(new userDefinedError(404, err.message))
         }
       }
-    
 }

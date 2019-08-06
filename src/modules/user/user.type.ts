@@ -8,5 +8,7 @@ export interface IUser  extends Document {
   password: string;
   gender: string;
   userRole: string;
+  twoFactorAuthenticationCode: string;
+  isTwoFactorAuthenticationEnabled: boolean;
   createdAt: Date;
 }

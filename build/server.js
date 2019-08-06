@@ -10,12 +10,14 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const compression_1 = __importDefault(require("compression"));
 const cors_1 = __importDefault(require("cors"));
 const routes_1 = require("./routes");
+const error_middleware_1 = __importDefault(require("./exceptions/error.middleware"));
 class Server {
     constructor() {
         this.app = express_1.default();
         this.dbConfig();
         this.config();
         this.setupRoutes();
+        this.initializeErrorHandling();
     }
     config() {
         //Settings
@@ -40,6 +42,9 @@ class Server {
     }
     setupRoutes() {
         routes_1.registerRoutes(this.app);
+    }
+    initializeErrorHandling() {
+        this.app.use(error_middleware_1.default);
     }
     start() {
         this.app.listen(this.app.get('port'), () => {

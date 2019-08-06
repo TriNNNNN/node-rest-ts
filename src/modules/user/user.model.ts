@@ -20,6 +20,8 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Post'
   }],
+  twoFactorAuthenticationCode: String,
+  isTwoFactorAuthenticationEnabled: { type : Boolean, default: false },
   createdAt: { type : Date, default: Date.now }
 })
 

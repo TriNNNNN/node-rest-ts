@@ -1,11 +1,12 @@
 import { Request, Response, Application, NextFunction } from "express";
 import { BaseCotroller } from '../baseApi';
 
-import { PostService } from './post.service'
-import { UserService } from '../user/user.service'
+import { PostService } from './post.service';
+import { UserService } from '../user/user.service';
 import { IPost } from './post.type';
-import { IUser } from '../user/user.type'
-import { AuthHelper } from '../../helpers/AuthHelper'
+import { IUser } from '../user/user.type';
+import { AuthHelper } from '../../helpers/AuthHelper';
+import userDefinedError  from '../../exceptions/error.handler';
 
 export class Post extends BaseCotroller{
 
@@ -33,7 +34,7 @@ export class Post extends BaseCotroller{
       return next();
     } catch (err) {
       res.locals.data = err;
-      return next();
+      next(new userDefinedError(404, 'err.message'))
     }
   }
 
@@ -48,14 +49,10 @@ export class Post extends BaseCotroller{
         res.locals.data = post;
         return next();
       } else {
-        res.locals.data = {
-          message: 'Invalid user'
-        }
-        return next();
+        next(new userDefinedError(404, 'user doesnt exists'))
       }
     } catch (err) {
-      res.locals.data = err;
-      return next();
+      next(new userDefinedError(404, 'err.message'))
     }
   }
 }

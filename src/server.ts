@@ -6,6 +6,8 @@ import compression from 'compression';
 import cors from 'cors';
 
 import { registerRoutes } from "./routes";
+import errorMiddleware from './exceptions/error.middleware';
+
 
 class Server {
   private app: express.Application
@@ -15,6 +17,7 @@ class Server {
     this.dbConfig();
     this.config();
     this.setupRoutes();
+    this.initializeErrorHandling();
   }
   
   config() {
@@ -42,6 +45,10 @@ class Server {
   
   private setupRoutes(): void {
     registerRoutes(this.app);
+  }
+
+  private initializeErrorHandling() {
+    this.app.use(errorMiddleware);
   }
 
   start() {
