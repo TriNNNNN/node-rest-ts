@@ -33,8 +33,8 @@ class AuthenticationService {
   public createToken(user: any) {
     return {
       user,
-      token: jwt.sign({ _id: user._id, userRole: user.userRole, }, 
-                    'f395ac4b864c6b095', { expiresIn: '15m' }),
+      token: jwt.sign({ _id: user._id, userRole: user.userRole, },
+      'f395ac4b864c6b095', { expiresIn: '15m' }),
     };
   }
 }

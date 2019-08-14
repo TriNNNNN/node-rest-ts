@@ -60,7 +60,6 @@ export class AuthController extends BaseCotroller {
 
             if (user !== null) {
                 const isValidPass: boolean = bcrypt.compareSync(password,user.password);
-                console.log('isValidPass--->', isValidPass)
                 delete user.password;
                 if (isValidPass) {
                     let token: string;
@@ -79,13 +78,11 @@ export class AuthController extends BaseCotroller {
                 next(new userDefinedError(404, 'Invalid Credentials'))
               }
         } catch (err) {
-            console.log(err)
             next(new userDefinedError(404, err.message))
         }
     }
 
     public async generateTwoFactorAuthCode(email: string, res: Response) {
-        console.log('Came In Here')
         let userService: UserService = new UserService();
         let authService: AuthenticationService = new AuthenticationService();
 

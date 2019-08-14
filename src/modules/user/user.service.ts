@@ -30,34 +30,6 @@ export class UserService {
     return userModel.findOne({ email: email }, '+password  -__v');
   }
 
-
-
-  // public async loginUserAndCreateToken(email: string,password: string): Promise<any> {
-  //   let user: IUser = await this.getUserByEmail(email);
-  //   user = JSON.parse(JSON.stringify(user));
-  //   if (user !== null) {
-  //     const isValidPass: boolean = await this.comparePassword(password,user.password);
-  //     if (isValidPass) {
-  //       let token: string;
-  //       if (user.userRole === 'admin') {
-  //         token = jwt.sign({ id: user._id, userRole: user.userRole }, 'f395ac4b864c6b095', {
-  //           expiresIn: '15m',
-  //         });
-  //       } else {
-  //         token = jwt.sign({ id: user._id, userRole: user.userRole }, 'f395ac4b864c6b095', {
-  //           expiresIn: '15m',
-  //         });
-  //       }
-  //       delete user.password;
-  //       return { user, token };
-  //     } else {
-  //       return {};
-  //     }
-  //   } else {
-  //     return {};
-  //   }
-  // }
-
   public async updateUserPost(user: IUser, postData: string): Promise<any> {
     return userModel.findByIdAndUpdate(user._id,{ $push: { post: postData }}, { new: true, upsert: true });
   }
