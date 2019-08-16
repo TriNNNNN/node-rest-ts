@@ -7,7 +7,6 @@ export class AuthHelper {
     public async validation(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const errors: Result<{}> = validationResult(req);
-            console.log('errors---->', errors,errors)
             if(!errors.isEmpty()) {
               next(new userDefinedError(404, 'Invalid Input', errors))
             } else {

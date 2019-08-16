@@ -10,6 +10,9 @@ import { IUser } from '../user/user.type';
 import { IPost } from '../post/post.type';
 import { IVote } from './vote.type';
 
+import { voteRules } from './vote.rules';
+
+
 import userDefinedError  from '../../exceptions/error.handler';
 
 export class Vote extends BaseCotroller{
@@ -26,8 +29,8 @@ export class Vote extends BaseCotroller{
 
     public init(): void {
         const authHelper: AuthHelper = new AuthHelper();
-        this.router.post('/upvote',authHelper.guard, this.upVotePost);
-        this.router.post('/downvote',authHelper.guard, this.downVotePost);
+        this.router.post('/upvote', authHelper.guard, voteRules.upVote, authHelper.validation, this.upVotePost);
+        this.router.post('/downvote',authHelper.guard, voteRules.downVote, authHelper.validation, this.downVotePost);
         this.router.get('/',authHelper.guard, this.getVotes);
     }
 
