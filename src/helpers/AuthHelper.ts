@@ -7,14 +7,14 @@ export class AuthHelper {
     public async validation(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const errors: Result<{}> = validationResult(req);
+            console.log('errors---->', errors,errors)
             if(!errors.isEmpty()) {
-                res.locals.data = errors.array();
-                return next();
+              next(new userDefinedError(404, 'Invalid Input', errors))
             } else {
-                return next();
+              return next()
             }
         } catch(err) {
-            next(new userDefinedError(404, err.message))
+            next(new userDefinedError(404, err.message, err))
         }
     }
 

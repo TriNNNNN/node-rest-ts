@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { check } from 'express-validator';
 
 export const userRules: any = {
-  forSignIn: [
+  loginIn: [
     check('email')
       .not()
       .isEmpty()
@@ -13,14 +13,13 @@ export const userRules: any = {
     check('password')
       .not()
       .isEmpty()
-      .withMessage('Please enter password')
+      .withMessage('Please enter password'),
+    
+    check('password')
       .isLength({ min: 8 })
       .withMessage('Password should be greater than 8 char'),
   ],
-  forSignUser: [
-    
-
-    
+  signUp: [  
     check('firstname')
       .not()
       .isEmpty()
@@ -59,5 +58,18 @@ export const userRules: any = {
       .not()
       .isEmpty()
       .withMessage('Please select gender'),
+  ],
+  validateSfa: [
+    check('email')
+      .not()
+      .isEmpty()
+      .withMessage('Please enter email address')
+      .isEmail()
+      .withMessage('Invalid email address'),
+
+    check('authenticationCode')
+      .not()
+      .isEmpty()
+      .withMessage('Please enter authenticationCode')
   ]
 };

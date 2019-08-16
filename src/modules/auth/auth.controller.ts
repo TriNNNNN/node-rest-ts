@@ -18,7 +18,6 @@ export class AuthController extends BaseCotroller {
     constructor() {
         super();
         this.init();
-        console.log(this)
     }
 
     public register(app: Application): void {
@@ -28,11 +27,9 @@ export class AuthController extends BaseCotroller {
 
     public init(): void {
         const authHelper: AuthHelper = new AuthHelper();
-        
-        this.router.post('/sign-up', userRules.forSignUser, authHelper.validation, this.signUp);
-        this.router.post('/login', userRules.forSignIn, authHelper.validation, this.login);
-        this.router.post('/2fa/authenticate', this.secondFactorAuthentication);
-        
+        this.router.post('/sign-up', userRules.signUp, authHelper.validation, this.signUp);
+        this.router.post('/login', userRules.loginIn, authHelper.validation, this.login);
+        this.router.post('/2fa/authenticate',userRules.validateSfa, authHelper.validation, this.sfAuthentication);
     }
 
     public async signUp(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -43,7 +40,7 @@ export class AuthController extends BaseCotroller {
             res.locals.data = userResult;
             return next();
         } catch (err) {
-            next(new userDefinedError(404, 'err.message'))
+            next(new userDefinedError(404, err.message, err))
         }
     }
 
@@ -78,10 +75,10 @@ export class AuthController extends BaseCotroller {
                         // generateQrCode
                         res.locals.data = authController.generateTwoFactorAuthCode(user.email, res)
                     } else {
+                        // create token and send response
                         res.locals.data = authService.createToken(user)
                         return next();
                     }
-                //   return { user, token };
                 } else {
                     next(new userDefinedError(404, 'Invalid Credentials'))
                 }
@@ -89,26 +86,21 @@ export class AuthController extends BaseCotroller {
                 next(new userDefinedError(404, 'Invalid Credentials'))
               }
         } catch (err) {
-            next(new userDefinedError(404, err.message))
+            next(new userDefinedError(404, err.message, err))
         }
     }
 
-
-
-    public secondFactorAuthentication = async (req: Request, res: Response, next: NextFunction) => {
+    public sfAuthentication = async (req: Request, res: Response, next: NextFunction) => {
         let userService: UserService = new UserService();
         let authService: AuthenticationService = new AuthenticationService();
+        let { authenticationCode } = req.body;
 
-        let authenticationCode = req.body.code;
         let user: IUser = await userService.getUserByEmail(req.body.email);
+        delete user.password
         let isCodeValid = await authService.verifyTwoFactorAuthenticationCode(authenticationCode, user);
         if (isCodeValid) {
-        //   const tokenData = authService.createToken(user, true);
-          delete user.password
-          res.send({
-            ...user.toObject(),
-            twoFactorAuthenticationCode: undefined
-          });
+          res.locals.data = authService.createToken(user);
+          return next();
         } else {
           next(new UserDefinedError(404, 'Failed 2way authentication'));
         }

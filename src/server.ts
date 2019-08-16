@@ -33,7 +33,7 @@ class Server {
   }
 
   dbConfig() {
-    const MONGO_URI = 'asdasdasdasdasdasd';
+    const MONGO_URI = 'mongodb://sa:Zew#ub#qC7@ds259377.mlab.com:59377/restapit';
     mongoose.connect(MONGO_URI || process.env.MONGO_URI , {
       useNewUrlParser: true,
       useCreateIndex: true

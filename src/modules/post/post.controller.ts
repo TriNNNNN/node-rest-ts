@@ -7,6 +7,8 @@ import { IPost } from './post.type';
 import { IUser } from '../user/user.type';
 import { AuthHelper } from '../../helpers/AuthHelper';
 import userDefinedError  from '../../exceptions/error.handler';
+import { postRules } from './post.rules';
+
 
 export class Post extends BaseCotroller{
 
@@ -23,7 +25,8 @@ export class Post extends BaseCotroller{
   public init(): void {
     const authHelper: AuthHelper = new AuthHelper();
     this.router.get('/',authHelper.guard, this.listPosts);
-    this.router.post('/create',authHelper.guard, this.addPost);
+    this.router.post('/create', postRules.createPost, 
+    authHelper.validation, this.addPost);
   }
 
   public listPosts = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -33,8 +36,7 @@ export class Post extends BaseCotroller{
       res.locals.data = posts;
       return next();
     } catch (err) {
-      res.locals.data = err;
-      next(new userDefinedError(404, 'err.message'))
+      next(new userDefinedError(404, err.message, err))
     }
   }
 
@@ -45,7 +47,7 @@ export class Post extends BaseCotroller{
       let user: IUser = await userService.getUserByEmail(req.body.email);
       if (user !== null) {
         const post: IPost = await postService.addPost(req.body);
-        const postUpdated = await userService.updateUserPost(user, post._id)
+        userService.updateUserPost(user, post._id)
         res.locals.data = post;
         return next();
       } else {
