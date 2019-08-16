@@ -16,7 +16,7 @@ class AuthenticationService {
       otpauthUrl : secretCode.otpauth_url,
       base32: secretCode.base32,
     };
-  }
+  };
 
   public verifyTwoFactorAuthenticationCode(twoFactorAuthenticationCode: string, user: any) {
     return speakeasy.totp.verify({
@@ -24,19 +24,19 @@ class AuthenticationService {
       encoding: 'base32',
       token: twoFactorAuthenticationCode,
     });
-  }
+  };
 
   public async respondWithQRCode(data: any, response: any) {
     QRCode.toFileStream(response, data);
-  }
+  };
 
   public createToken(user: any) {
     return {
       user,
       token: jwt.sign({ _id: user._id, userRole: user.userRole, },
-      'f395ac4b864c6b095', { expiresIn: '15m' }),
+      'f395ac4b864c6b095', { expiresIn: '24h' }),
     };
-  }
+  };
 }
 
 export default AuthenticationService;

@@ -12,4 +12,8 @@ export class PostService {
     return postObj.save();
   }
 
+  public async getPostById(id: string): Promise<any> {
+    return postModel.findOne({ _id: id }, '-__v');
+  }
+
 }

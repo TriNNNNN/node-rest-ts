@@ -22,7 +22,7 @@ export class AuthHelper {
         try {
           const token: string = req.headers.authorization || req.query.token;
           if (token) {
-            const auth: any = jwt.verify(token, 'f395ac4b864c6b095');
+            const auth: any =  await jwt.verify(token, 'f395ac4b864c6b095');
             if (auth) {
               req.body.loggedinUserId = auth.id;
               next();

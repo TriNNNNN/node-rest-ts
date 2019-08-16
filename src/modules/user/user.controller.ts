@@ -3,6 +3,7 @@ import { BaseCotroller } from '../baseApi';
 
 import { UserService } from './user.service'
 import { IUser } from './user.type';
+import { AuthHelper } from '../../helpers/AuthHelper';
 
 
 export class User extends BaseCotroller{
@@ -18,8 +19,9 @@ export class User extends BaseCotroller{
     }
 
     public init(): void {
-        this.router.get('/', this.listUsers);
-        this.router.post('/update/:id', this.updateUser);
+        const authHelper: AuthHelper = new AuthHelper();
+        this.router.get('/',authHelper.guard, this.listUsers);
+        this.router.post('/update/:id',authHelper.guard, this.updateUser);
     }
 
     public async listUsers(req: Request, res: Response, next: NextFunction): Promise<void> {

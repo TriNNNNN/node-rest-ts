@@ -14,9 +14,11 @@ import UserDefinedError from '../../exceptions/error.handler';
 
 
 export class AuthController extends BaseCotroller {
+
     constructor() {
         super();
         this.init();
+        console.log(this)
     }
 
     public register(app: Application): void {
@@ -29,7 +31,6 @@ export class AuthController extends BaseCotroller {
         
         this.router.post('/sign-up', userRules.forSignUser, authHelper.validation, this.signUp);
         this.router.post('/login', userRules.forSignIn, authHelper.validation, this.login);
-        // this.router.post('/2fa/generate', this.generateTwoFactorAuthCode);
         this.router.post('/2fa/authenticate', this.secondFactorAuthentication);
         
     }
@@ -48,12 +49,23 @@ export class AuthController extends BaseCotroller {
 
     public async comparePassword(password: string,hash: string): Promise<boolean> {
         return bcrypt.compareSync(password, hash);
-      }
+    }
+
+    public generateTwoFactorAuthCode = async (email: string, res: Response) => {
+        let userService: UserService = new UserService();
+        let authService: AuthenticationService = new AuthenticationService();
+
+        let user: IUser = await userService.getUserByEmail(email);
+        let { otpauthUrl, base32 } = authService.getTwoFactorAuthenticationCode();
+        userModel.findByIdAndUpdate(user._id, {twoFactorAuthenticationCode: base32});
+        authService.respondWithQRCode(otpauthUrl, res);
+    }
     
     public async login(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             let userService: UserService = new UserService();
             let authService: AuthenticationService = new AuthenticationService();
+            let authController: any = new AuthController()
             let { email, password } = req.body;
             let user: IUser = await userService.getUserByEmail(email);
             user = JSON.parse(JSON.stringify(user));
@@ -62,10 +74,9 @@ export class AuthController extends BaseCotroller {
                 const isValidPass: boolean = bcrypt.compareSync(password,user.password);
                 delete user.password;
                 if (isValidPass) {
-                    let token: string;
                     if(user.isTwoFactorAuthenticationEnabled) {
                         // generateQrCode
-                        this.generateTwoFactorAuthCode(user.email, res)
+                        res.locals.data = authController.generateTwoFactorAuthCode(user.email, res)
                     } else {
                         res.locals.data = authService.createToken(user)
                         return next();
@@ -82,17 +93,9 @@ export class AuthController extends BaseCotroller {
         }
     }
 
-    public async generateTwoFactorAuthCode(email: string, res: Response) {
-        let userService: UserService = new UserService();
-        let authService: AuthenticationService = new AuthenticationService();
 
-        let user: IUser = await userService.getUserByEmail(email);
-        let { otpauthUrl, base32 } = authService.getTwoFactorAuthenticationCode();
-        await userModel.findByIdAndUpdate(user._id, {twoFactorAuthenticationCode: base32});
-        authService.respondWithQRCode(otpauthUrl, res);
-    }
 
-    private secondFactorAuthentication = async (req: Request, res: Response, next: NextFunction) => {
+    public secondFactorAuthentication = async (req: Request, res: Response, next: NextFunction) => {
         let userService: UserService = new UserService();
         let authService: AuthenticationService = new AuthenticationService();
 

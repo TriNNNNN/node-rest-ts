@@ -6,7 +6,7 @@ import { IUser } from './user.type';
 export class UserService {
 
   public async getAllUsers(): Promise<IUser[]> {
-    return userModel.find().select('-__v -password').populate('post', 'title url -_id');
+    return userModel.find().select('-__v -password').populate('post', '_id title url');
   }
 
   public async generateHash(password: string): Promise<string> {
