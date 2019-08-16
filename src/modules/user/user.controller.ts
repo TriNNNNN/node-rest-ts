@@ -1,10 +1,12 @@
 import { Request, Response, Application, NextFunction } from "express";
 import { BaseCotroller } from '../baseApi';
-
-import { UserService } from './user.service'
-import { IUser } from './user.type';
 import { AuthHelper } from '../../helpers/AuthHelper';
 
+import { UserService } from './user.service';
+
+import { IUser } from './user.type';
+
+import userDefinedError  from '../../exceptions/error.handler';
 
 export class User extends BaseCotroller{
 
@@ -31,8 +33,7 @@ export class User extends BaseCotroller{
         res.locals.data = users;
         return next();
         } catch (err) {
-        res.locals.data = err;
-        return next();
+          next(new userDefinedError(404, err.message))
         }
     }
 
@@ -46,8 +47,7 @@ export class User extends BaseCotroller{
           res.locals.data = updatedUser;
           return next();
         } catch (err) {
-          res.locals.data = err;
-          return next();
+          next(new userDefinedError(404, err.message))
         }
       }
 }

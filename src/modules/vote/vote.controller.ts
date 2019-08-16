@@ -12,7 +12,6 @@ import { IVote } from './vote.type';
 
 import userDefinedError  from '../../exceptions/error.handler';
 
-
 export class Vote extends BaseCotroller{
 
   constructor() {
@@ -27,10 +26,9 @@ export class Vote extends BaseCotroller{
 
     public init(): void {
         const authHelper: AuthHelper = new AuthHelper();
-        this.router.post('/upvote', this.upVotePost);
-        this.router.post('/downvote', this.downVotePost);
-        this.router.get('/', this.getVotes);
-
+        this.router.post('/upvote',authHelper.guard, this.upVotePost);
+        this.router.post('/downvote',authHelper.guard, this.downVotePost);
+        this.router.get('/',authHelper.guard, this.getVotes);
     }
 
     public upVotePost = async(req: Request, res: Response, next: NextFunction): Promise<void> => {

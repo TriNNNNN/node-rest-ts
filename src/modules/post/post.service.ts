@@ -3,16 +3,16 @@ import { IPost } from './post.type';
 
 export class PostService {
 
-  public async getAllPosts(): Promise<IPost[]> {
+  public getAllPosts = async(): Promise<IPost[]> => {
     return postModel.find();
   }
 
-  public async addPost(data: IPost): Promise<IPost> {
+  public addPost = async(data: IPost): Promise<IPost> => {
     const postObj: IPost = new postModel(data);
     return postObj.save();
   }
 
-  public async getPostById(id: string): Promise<any> {
+  public getPostById = async(id: string): Promise<any> => {
     return postModel.findOne({ _id: id }, '-__v');
   }
 

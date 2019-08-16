@@ -23,10 +23,10 @@ export class Post extends BaseCotroller{
   public init(): void {
     const authHelper: AuthHelper = new AuthHelper();
     this.router.get('/',authHelper.guard, this.listPosts);
-    this.router.post('/create', this.addPost);
+    this.router.post('/create',authHelper.guard, this.addPost);
   }
 
-  public async listPosts(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public listPosts = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const postService: PostService = new PostService();
       const posts: IPost[] = await postService.getAllPosts();
@@ -38,7 +38,7 @@ export class Post extends BaseCotroller{
     }
   }
 
-  public async addPost(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public addPost = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const postService: PostService = new PostService();
       const userService: UserService = new UserService();
