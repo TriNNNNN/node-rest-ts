@@ -54,7 +54,8 @@ export class AuthController extends BaseCotroller {
 
         let user: IUser = await userService.getUserByEmail(email);
         let { otpauthUrl, base32 } = authService.getTwoFactorAuthenticationCode();
-        userModel.findByIdAndUpdate(user._id, {twoFactorAuthenticationCode: base32});
+        console.log('base32--->', base32)
+        let someObj = await userService.updateOrInsertValue(user, base32);
         authService.respondWithQRCode(otpauthUrl, res);
     }
     
@@ -97,7 +98,10 @@ export class AuthController extends BaseCotroller {
 
         let user: IUser = await userService.getUserByEmail(req.body.email);
         delete user.password
+        console.log('authenticationCode--->', authenticationCode)
+        console.log('user.twoFactorAuthenticationCode-->', user.twoFactorAuthenticationCode)
         let isCodeValid = await authService.verifyTwoFactorAuthenticationCode(authenticationCode, user);
+        console.log('isCodeValid---->', isCodeValid)
         if (isCodeValid) {
           res.locals.data = authService.createToken(user);
           return next();

@@ -22,7 +22,7 @@ class AuthenticationService {
     return speakeasy.totp.verify({
       secret: user.twoFactorAuthenticationCode,
       encoding: 'base32',
-      token: twoFactorAuthenticationCode,
+      token: twoFactorAuthenticationCode
     });
   };
 
