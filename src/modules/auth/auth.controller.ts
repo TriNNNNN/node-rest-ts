@@ -8,10 +8,7 @@ import  userDefinedError  from '../../exceptions/error.handler'
 import AuthenticationService from './auth.service';
 import * as bcrypt from 'bcrypt';
 
-import { userModel } from '../user/user.model';
 import UserDefinedError from '../../exceptions/error.handler';
-
-
 
 export class AuthController extends BaseCotroller {
 
@@ -97,10 +94,7 @@ export class AuthController extends BaseCotroller {
 
         let user: IUser = await userService.getUserByEmail(req.body.email);
         delete user.password
-        console.log('authenticationCode--->', authenticationCode)
-        console.log('user.twoFactorAuthenticationCode-->', user.twoFactorAuthenticationCode)
         let isCodeValid = await authService.verifyTwoFactorAuthenticationCode(authenticationCode, user);
-        console.log('isCodeValid---->', isCodeValid)
         if (isCodeValid) {
           res.locals.data = authService.createToken(user);
           return next();
