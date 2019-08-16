@@ -54,8 +54,7 @@ export class AuthController extends BaseCotroller {
 
         let user: IUser = await userService.getUserByEmail(email);
         let { otpauthUrl, base32 } = authService.getTwoFactorAuthenticationCode();
-        console.log('base32--->', base32)
-        let someObj = await userService.updateOrInsertValue(user, base32);
+        await userService.updateAuthenticationCode(user, base32);
         authService.respondWithQRCode(otpauthUrl, res);
     }
     

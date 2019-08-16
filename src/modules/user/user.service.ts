@@ -34,7 +34,7 @@ export class UserService {
     return userModel.findByIdAndUpdate(user._id,{ $push: { post: postData }}, { new: true, upsert: true });
   }
 
-  public updateAuthenticationCode = async(user: any, key: any, base32: any ) => {
+  public updateAuthenticationCode = async(user: any, base32: any ) => {
     return userModel.findByIdAndUpdate(user._id, {twoFactorAuthenticationCode: base32}, { new: true, upsert: true });
   }
 }
